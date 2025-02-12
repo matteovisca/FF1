@@ -1,0 +1,17 @@
+## Visual Studio ##
+.vs/
+*.user
+*.suo
+
+## Build Results ##
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+
+## DotNet ##
+project.lock.json
+project.fragment.lock.json
+artifacts/

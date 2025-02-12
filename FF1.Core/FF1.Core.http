@@ -1,0 +1,6 @@
+@FF1.Core_HostAddress = http://localhost:5136
+
+GET {{FF1.Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
