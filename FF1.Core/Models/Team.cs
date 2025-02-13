@@ -3,7 +3,7 @@ namespace FF1.Core.Models;
 public class Team
 {
 
-	public int Id
+	public Guid Id
 	{
 		get;
 		set;
@@ -18,9 +18,9 @@ public class Team
 		get;
 		set;
 	}
-	
+
 	public string Name { get; set; } = "";
 	public List<Driver> Drivers { get; set; }
 	public string Color { get; set; }
-	
+
 }

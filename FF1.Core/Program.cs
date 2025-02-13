@@ -1,10 +1,52 @@
+using FF1.Core.Db;
+using FF1.Core.Extensions;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+#region Database
+
+
+var sqlConBuilder = new SqlConnectionStringBuilder
+{
+		ConnectionString = builder.Configuration.GetConnectionString("SqlDbConnection")
+};
+Log.Information(sqlConBuilder.ConnectionString);
+builder.Services.AddDbContext<AppDbContext>(
+		opt => opt.UseSqlServer(sqlConBuilder.ConnectionString).ConfigureWarnings(warning => warning.Ignore(CoreEventId.NavigationBaseIncludeIgnored))
+);
+
+#endregion
+
+#region Identity
+builder.Services.ConfigureIdentity(opt =>
+{
+	opt.NameIdentityProvider = builder.Configuration["TokenProvider:NameIdentityProvider"] ?? "DefaultProvider";
+	opt.LifeTimeMinutes = int.Parse(builder.Configuration["TokenProvider:LifeTimeMinutes"] ?? "60");
+});
+#endregion
+
+
+builder.Services.AddCors(o =>
+{
+	o.AddPolicy("AllowAll", policyBuilder =>
+			policyBuilder
+					.AllowAnyHeader()
+					.AllowAnyMethod()
+					.AllowCredentials()
+					.SetIsOriginAllowed(e => true)
+	);
+});
+
 var app = builder.Build();
+
+app.MigrateDatabase<AppDbContext>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -13,29 +55,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
