@@ -10,5 +10,4 @@ public class Weather
     public int TrackTemperature { get; set; }
     public int RainFall { get; set; }
     public DateTime Date { get; set; }
-    
 }

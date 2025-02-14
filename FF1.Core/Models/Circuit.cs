@@ -13,7 +13,4 @@ public class Circuit
     public string CountryComplete { get; set; }
     public double TrackLength { get; set; }
     public int Curves { get; set; }
-     
-
-    
 }
