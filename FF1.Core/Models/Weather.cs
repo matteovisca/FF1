@@ -8,6 +8,6 @@ public class Weather
     public int WindSpeed { get; set; }
     public int WindDirection { get; set; }
     public int TrackTemperature { get; set; }
-    public int RainFall { get; set; }
+    public int Rainfall { get; set; }
     public DateTime Date { get; set; }
 }

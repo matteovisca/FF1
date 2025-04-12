@@ -1,5 +1,7 @@
 using FF1.Core.Db;
 using FF1.Core.Extensions;
+using FF1.Core.Interfaces;
+using FF1.Core.Service;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -43,6 +45,7 @@ builder.Services.AddCors(o =>
 					.SetIsOriginAllowed(e => true)
 	);
 });
+builder.Services.AddHttpClient<IDriverService, DriverService>();
 
 var app = builder.Build();
 
